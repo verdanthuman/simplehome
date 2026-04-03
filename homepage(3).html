@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2a2a2a;
+    color: #a0b8a0;
+    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  h1 {
+    text-align: center;
+    color: #8a9e8a;
+    font-size: 1rem;
+    font-weight: normal;
+    letter-spacing: 0.15em;
+    margin-bottom: 2rem;
+    opacity: 0.5;
+  }
+
+  .question {
+    text-align: center;
+    color: #b87333;
+    font-size: 1.6rem;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid #4a5e4a;
+    color: #8a9e8a;
+    padding: 0.5rem 1.1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: #b87333;
+    color: #b87333;
+  }
+
+  .filter-btn.active {
+    background: #3a3a3a;
+    border-color: #b87333;
+    color: #b87333;
+  }
+
+  .links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+    max-width: 820px;
+    margin: 0 auto 3rem;
+  }
+
+  .link-item {
+    display: block;
+    padding: 0.55rem 1.1rem;
+    border-radius: 0.3rem;
+    text-decoration: none;
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+    border: 1px solid transparent;
+    transition: all 0.25s;
+    opacity: 0.18;
+    pointer-events: none;
+    color: #a0b8a0;
+    background: #313131;
+  }
+
+  .link-item.visible {
+    opacity: 1;
+    pointer-events: auto;
+    border-color: #3d5a3d;
+  }
+
+  .link-item.visible:hover {
+    background: #3a3a3a;
+    border-color: #6a8a6a;
+    color: #c8d8c8;
+  }
+
+  .link-item.visible.copper {
+    color: #c8834a;
+    border-color: #5a3d28;
+  }
+
+  .link-item.visible.copper:hover {
+    border-color: #b87333;
+    color: #d4944a;
+  }
+
+  /* RSS */
+  .rss-section {
+    max-width: 620px;
+    margin: 0 auto;
+    border-top: 1px solid #3a3a3a;
+    padding-top: 1.5rem;
+  }
+
+  .rss-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #5a6e5a;
+    text-align: center;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .rss-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #333;
+    font-size: 0.82rem;
+    color: #6a7e6a;
+    line-height: 1.5;
+    cursor: default;
+    user-select: none;
+  }
+
+  .rss-item:last-child { border-bottom: none; }
+
+  .rss-source {
+    font-size: 0.7rem;
+    color: #4a5a4a;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .rss-error { color: #5a4a3a; font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>what brings you here?</h1>
+
+<div class="filters">
+  <button class="filter-btn" onclick="setFilter('guidance')">Seeking Guidance</button>
+  <button class="filter-btn" onclick="setFilter('planning')">Planning Something</button>
+  <button class="filter-btn" onclick="setFilter('information')">Finding Information</button>
+  <button class="filter-btn" onclick="setFilter('enriching')">Enriching & Down-Regulating</button>
+  <button class="filter-btn" onclick="setFilter('communication')">Communication</button>
+  <button class="filter-btn" onclick="setFilter('housekeeping')">Housekeeping</button>
+  <button class="filter-btn" onclick="setFilter('work')">Work</button>
+</div>
+
+<div class="links-grid" id="links"></div>
+
+<div class="rss-section">
+  <div class="rss-label">RNZ — recent headlines</div>
+  <div id="rss-feed"><div class="rss-error">Loading...</div></div>
+</div>
+
+<script>
+const links = [
+  { label: "Claude",           url: "https://claude.ai",                                          cats: ["guidance","enriching","work","planning","information"] },
+  { label: "Goblin Tools",     url: "https://goblin.tools",                                       cats: ["guidance","planning"] },
+  { label: "Manus",            url: "https://manus.im",                                           cats: ["guidance","planning"] },
+  { label: "DuckDuckGo",       url: "https://duckduckgo.com",                                     cats: ["guidance","planning","information"] },
+  { label: "Google Calendar",  url: "https://calendar.google.com",                                cats: ["planning","work"] },
+  { label: "TimeTree",         url: "https://timetreeapp.com",                                    cats: ["planning","work"] },
+  { label: "Kiwibank",         url: "https://www.kiwibank.co.nz",                                 cats: ["planning","housekeeping"] },
+  { label: "Gmail",            url: "https://mail.google.com",                                    cats: ["planning","communication","work","housekeeping"] },
+  { label: "Google Maps",      url: "https://maps.google.com",                                    cats: ["planning"] },
+  { label: "Google Docs",      url: "https://docs.google.com",                                    cats: ["planning","work"] },
+  { label: "Google Sheets",    url: "https://sheets.google.com",                                  cats: ["planning","work"] },
+  { label: "Google Scholar",   url: "https://scholar.google.com",                                 cats: ["information"] },
+  { label: "AUT Library",      url: "https://library.aut.ac.nz",                                  cats: ["information"] },
+  { label: "AUT ProQuest",     url: "https://ebookcentral.proquest.com/lib/aut/home.action",      cats: ["information","enriching"] },
+  { label: "AUT Canvas",       url: "https://canvas.aut.ac.nz",                                   cats: ["information","work"] },
+  { label: "YouTube",          url: "https://youtube.com",                                        cats: ["enriching"] },
+  { label: "Useless Web",      url: "https://theuselessweb.com",                                  cats: ["enriching"] },
+  { label: "WhatsApp",         url: "https://web.whatsapp.com",                                   cats: ["communication"] },
+  { label: "Google Meet",      url: "https://meet.google.com",                                    cats: ["communication","work"] },
+  { label: "Microsoft Teams",  url: "https://teams.microsoft.com",                                cats: ["communication","work"] },
+  { label: "SortMe",           url: "https://app.sortme.com/financial-overview",                  cats: ["housekeeping"] },
+  { label: "InvestNow",        url: "https://www.investnow.co.nz",                                cats: ["housekeeping"] },
+  { label: "Hnry",             url: "https://www.hnry.co.nz",                                     cats: ["housekeeping"] },
+  { label: "Google Drive",     url: "https://drive.google.com",                                   cats: ["housekeeping","work","planning"] },
+  { label: "Dropbox",          url: "https://www.dropbox.com",                                    cats: ["work"] },
+  { label: "Notion",           url: "https://www.notion.so",                                      cats: ["planning","work"] },
+  { label: "Canva",            url: "https://www.canva.com",                                      cats: ["work","planning"] },
+];
+
+let active = null;
+
+function setFilter(cat) {
+  active = (active === cat) ? null : cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (active) document.querySelector(`[onclick="setFilter('${cat}')"]`).classList.add('active');
+  renderLinks();
+}
+
+function renderLinks() {
+  const grid = document.getElementById('links');
+  grid.innerHTML = links.map(l => {
+    const show = !active || l.cats.includes(active);
+    const copper = l.copper ? ' copper' : '';
+    return `<a href="${l.url}" target="_blank" class="link-item${show ? ' visible' : ''}${copper}">${l.label}</a>`;
+  }).join('');
+}
+
+renderLinks();
+
+// RSS via rss2json
+async function fetchFeed(url, label) {
+  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  const res = await fetch(proxy);
+  const data = await res.json();
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(data.contents, 'text/xml');
+  const items = [...xml.querySelectorAll('item')].slice(0, 5);
+  return items.map(item => ({
+    title: item.querySelector('title')?.textContent || '',
+    date: item.querySelector('pubDate')?.textContent || '',
+    src: label
+  }));
+}
+
+async function loadRSS() {
+  const feed = document.getElementById('rss-feed');
+  try {
+    const [nz, world] = await Promise.all([
+      fetchFeed('https://www.rnz.co.nz/rss/national.xml', 'NZ'),
+      fetchFeed('https://www.rnz.co.nz/rss/world.xml', 'World')
+    ]);
+    const items = [...nz, ...world];
+    if (!items.length) throw new Error();
+    feed.innerHTML = items.map(item => `
+      <div class="rss-item">
+        <div class="rss-source">RNZ ${item.src} · ${item.date ? new Date(item.date).toLocaleDateString('en-NZ',{day:'numeric',month:'short'}) : ''}</div>
+        ${item.title}
+      </div>`).join('');
+  } catch(e) {
+    feed.innerHTML = '<div class="rss-error">Headlines unavailable — <a href="https://www.rnz.co.nz" target="_blank" style="color:#6a8a6a">visit RNZ directly</a></div>';
+  }
+}
+
+loadRSS();
+</script>
+</body>
+</html>
